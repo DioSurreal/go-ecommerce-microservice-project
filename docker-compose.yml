@@ -1,18 +1,56 @@
 version: '3.8'
 
 services:
-  postgres:
+  # --- PostgreSQL Databases ---
+  postgres_auth:
     image: postgres:16-alpine
-    container_name: postgres_db
+    container_name: postgres_auth_db
     environment:
-      POSTGRES_USER: user
+      POSTGRES_USER: user_auth
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: ecommerce_db
+      POSTGRES_DB: auth_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_auth_data:/var/lib/postgresql/data
 
+  postgres_order:
+    image: postgres:16-alpine
+    container_name: postgres_order_db
+    environment:
+      POSTGRES_USER: user_order
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: order_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_order_data:/var/lib/postgresql/data
+
+  postgres_product:
+    image: postgres:16-alpine
+    container_name: postgres_product_db
+    environment:
+      POSTGRES_USER: user_product
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: product_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_product_data:/var/lib/postgresql/data
+
+  postgres_payment:
+    image: postgres:16-alpine
+    container_name: postgres_payment_db
+    environment:
+      POSTGRES_USER: user_payment
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: payment_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_payment_data:/var/lib/postgresql/data
+
+  # --- Other Infrastructure ---
   redis:
     image: redis:7-alpine
     container_name: redis_cache
@@ -55,16 +93,19 @@ services:
 
   mongodb:
     image: mongo:7.0
-    container_name: mongodb
+    container_name: notification
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: user
-      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_ROOT_PASSWORD: 123456
     volumes:
       - mongo_data:/data/db
 
 volumes:
-  postgres_data:
+  postgres_auth_data:
+  postgres_order_data:
+  postgres_product_data:
+  postgres_payment_data:
   redis_data:
   mongo_data:
